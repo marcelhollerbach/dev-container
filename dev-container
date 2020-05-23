@@ -9,7 +9,31 @@ parser = argparse.ArgumentParser(description='Bring up the docker image that can
 parser.add_argument('image', type=str, help='Do not search for a docker file in CI files, use the supplied ID instead', nargs='?')
 
 args = parser.parse_args()
+#
+# Dev container provider
+# will simply look for .dev-container with the container name in there
+#
+class DevContainerImageProvider:
+  def __init__(self):
+    self.image = None
 
+  def evalulate (self, project_dir):
+    workflow_dir = os.path.join(project_dir, ".dev-container")
+    if os.path.isfile(workflow_dir) == False:
+      return
+    file = open(workflow_dir)
+    self.image = file.read().strip('\n')
+
+  def get_image_name(self, project_dir):
+    self.evalulate(project_dir)
+    return self.image
+
+  def is_present(self, project_dir):
+    self.evalulate(project_dir)
+    return self.image != None
+
+  def name(self):
+    return "dev-container"
 #
 # Github action provider
 #
@@ -113,7 +137,7 @@ class CircleCIImageProvider:
   def name(self):
     return "CircleCi"
 
-image_providers = [CircleCIImageProvider(), TravisCIImageProvider(), GithubActionsImageProvider()]
+image_providers = [DevContainerImageProvider(), CircleCIImageProvider(), TravisCIImageProvider(), GithubActionsImageProvider()]
 
 command = []
 command += ["docker","run","-it"]
