@@ -164,6 +164,8 @@ project_name = "/"+os.path.basename(project_dir)
 command += ["-v", project_dir+":"+project_name]
 print("Using project dir "+project_dir)
 
+command += ["-w", "/"+project_name]
+
 #decide if we need have a passed image or not.
 if args.image != None:
   command += image
