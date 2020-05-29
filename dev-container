@@ -8,6 +8,7 @@ import re
 parser = argparse.ArgumentParser(description='Bring up the docker image that can be fetched from CI config files. Additionally, this will merge the project directory and everything required to bring up wayland or xorg clients from your host.')
 parser.add_argument('image', type=str, help='Do not search for a docker file in CI files, use the supplied ID instead', nargs='?')
 parser.add_argument('--update', help='Update the docker image before running the command', dest='update', action='store_const', const=True, default=False)
+parser.add_argument('--sys-cap', help='Run docker with system capabilities, usefull for running gdb in it.', dest='sys_cap', action='store_const', const=True, default=False)
 args = parser.parse_args()
 #
 # Dev container provider
@@ -144,6 +145,10 @@ update_command += ["docker", "pull"]
 
 command = []
 command += ["docker","run","-it"]
+
+if args.sys_cap:
+  command += ['--cap-add', 'SYS_ADMIN', '--security-opt', 'seccomp=unconfined']
+
 command += ["-e", "XDG_RUNTIME_DIR=/tmp"]
 
 #support for X11
