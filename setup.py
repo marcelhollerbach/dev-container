@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="dev-container",
-    version="0.1",
+    version="0.2",
     author="Marcel Hollerbach",
     author_email="mail@bu5hm4n.de",
     description="A small bin tool that will spin up a docker for you. The docker will be picked from your CI tools, and can be used instead of the host system",
